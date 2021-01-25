@@ -2,6 +2,8 @@
 const jwt = require('jsonwebtoken');
 const {User}=require('../dbConfig')
 const config = require('../configs/config');
+const dotenv = require("dotenv");
+
 
 
 
@@ -30,10 +32,14 @@ exports.guardarUsuario = (req, res) => {
           attributes: ['password']
         }).then(function(response) {
           if(response.password==req.body.password){
+// get config vars
+dotenv.config();
+console.log(process.env.TOKEN_SECRET);
+
                const payload = {
                     check:  true
                    };
-                   const token = jwt.sign(payload, config.key, {
+                   const token = jwt.sign(payload, process.env.TOKEN_SECRET, {
                     expiresIn: 1440
                    });
                    res.json({   
