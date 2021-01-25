@@ -1,18 +1,24 @@
 // Requires
 require('./dbConfig')
+const jwt = require('jsonwebtoken');
+const config = require('./configs/config');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const express = require('express')
 const app = express()
 const port = 3000
 
+
+
 //Settings
-app.use(cors({
-    origin: '*'
-  }));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+
+app.use(cors({
+    origin: '*'
+  }));
 
 
 // Routes
