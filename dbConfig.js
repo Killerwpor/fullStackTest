@@ -1,21 +1,39 @@
-const e = require('cors');
-const Sequelize = require('sequelize');
+const e = require("cors");
+const Sequelize = require("sequelize");
 
-const userModel= require('./models/users');
+const userModel = require("./models/users");
+const coinModel = require("./models/coins");
 
-const sequelize= new Sequelize('KS3ULJZWQE', 'KS3ULJZWQE', 'V9I0nFbyZB',{
-    host: 'remotemysql.com',
-    dialect: 'mysql'
-})
+const sequelize = new Sequelize("KS3ULJZWQE", "KS3ULJZWQE", "V9I0nFbyZB", {
+  host: "remotemysql.com",
+  dialect: "mysql",
+});
 
-const User=userModel(sequelize, Sequelize);
+const User = userModel(sequelize, Sequelize);
+const Coin = coinModel(sequelize, Sequelize);
 
-sequelize.sync({
-    force: false
-}).then(()=>{
-    console.log("Tablas sincronizadas")
-})
+User.hasMany(Coin, {
+  foreignKey: {
+    name: "uid",
+    allowNull: false,
+  },
+});
+Coin.belongsTo(User, {
+  foreignKey: {
+    name: "uid",
+    allowNull: false,
+  },
+});
 
-module.exports= {
-    User
-}
+sequelize
+  .sync({
+    force: false,
+  })
+  .then(() => {
+    console.log("Tablas sincronizadas");
+  });
+
+module.exports = {
+  User,
+  Coin,
+};
