@@ -33,9 +33,5 @@ module.exports = (sequelize, type) => {
         },
       },
     },
-    monedaPreferida: {
-      type: type.STRING,
-      allowNull: false,
-    },
   });
 };

@@ -3,6 +3,7 @@ const Sequelize = require("sequelize");
 
 const userModel = require("./models/users");
 const coinModel = require("./models/coins");
+const coinUserModel = require("./models/user-coin");
 
 const sequelize = new Sequelize("KS3ULJZWQE", "KS3ULJZWQE", "V9I0nFbyZB", {
   host: "remotemysql.com",
@@ -11,19 +12,24 @@ const sequelize = new Sequelize("KS3ULJZWQE", "KS3ULJZWQE", "V9I0nFbyZB", {
 
 const User = userModel(sequelize, Sequelize);
 const Coin = coinModel(sequelize, Sequelize);
+const CoinUser = coinUserModel(sequelize, Sequelize);
 
-User.hasMany(Coin, {
-  foreignKey: {
-    name: "uid",
-    allowNull: false,
-  },
-});
-Coin.belongsTo(User, {
-  foreignKey: {
-    name: "uid",
-    allowNull: false,
-  },
-});
+User.belongsToMany(Coin, { through: CoinUser });
+Coin.belongsToMany(User, { through: CoinUser });
+
+// User.hasMany(coinUser, {
+//   foreignKey: {
+//     name: "uid",
+//     allowNull: false,
+//   },
+// });
+
+// coinUser.belongsTo(User, {
+//   foreignKey: {
+//     name: "uid",
+//     allowNull: false,
+//   },
+// });
 
 sequelize
   .sync({
@@ -36,4 +42,5 @@ sequelize
 module.exports = {
   User,
   Coin,
+  CoinUser,
 };

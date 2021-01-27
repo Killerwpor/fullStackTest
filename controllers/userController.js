@@ -1,22 +1,53 @@
 //Requires
 const jwt = require("jsonwebtoken");
-const { User, Coin } = require("../dbConfig");
+const { User, Coin, CoinUser } = require("../dbConfig");
 const dotenv = require("dotenv");
 const axios = require("axios").default;
+const coinController = require("../controllers/coinController");
 
 exports.traerUsuarios = async (req, res) => {
   const users = await User.findAll();
   res.json(users);
 };
 
-exports.guardarUsuario = (req, res) => {
-  const user = User.create(req.body)
-    .then(function (model) {
-      res.json(model);
-    })
-    .catch(function (e) {
-      res.send(e.message);
-    });
+exports.guardarUsuario = async (req, res) => {
+  let monedaFavorita = [req.body.monedaPreferida];
+  const infoMoneda = await coinController.obtenerInfoMonedas(monedaFavorita); //Se busca si la moneda que mandó el usuario si existe
+  if (infoMoneda.length != 0) {
+    //Guardar usuario
+    const user = User.create(req.body)
+      .then(function (model) {
+        console.log("Usuario guardado exitosamente");
+        //Guardar moneda
+        const coin = Coin.create(infoMoneda[0])
+          .then(function (model) {
+            console.log("Moneda guardada exitosamente");
+          })
+          .catch(function (e) {
+            console.log(e.message);
+          });
+        //Guardar relación usuario-moneda
+        const infoCoinMoneda = {
+          CoinId: infoMoneda[0].id,
+          UserUserName: req.body.userName,
+          favorita: true,
+        };
+        const coinUser = CoinUser.create(infoCoinMoneda)
+          .then(function (model) {
+            console.log("Relación usuario-moneda guardada exitosamente");
+          })
+          .catch(function (e) {
+            console.log(e.message);
+          });
+        res.json(model);
+      })
+      .catch(function (e) {
+        res.send(e.message);
+      });
+  } else {
+    //Si no existe se le indica
+    res.send("Moneda favorita no existe");
+  }
 };
 
 exports.login = async (req, res) => {
@@ -70,7 +101,7 @@ exports.login = async (req, res) => {
 
 exports.listarMonedas = async (req, res) => {
   var monedas = req.body.monedas;
-  ids = await obtenerIdMonedas(monedas); //Estan listos los id de las criptomonedas para operar con ellos después
+  ids = await obtenerInfo(monedas); //Estan listos los id de las criptomonedas para operar con ellos después
   res.json(ids);
 };
 
@@ -84,35 +115,3 @@ exports.guardarMoneda = async (req, res) => {
       res.send(e.message);
     });
 };
-
-function obtenerIdMonedas(monedas) {
-  return new Promise((resolve, reject) => {
-    var options = {
-      method: "GET",
-      url: "https://bravenewcoin.p.rapidapi.com/asset",
-      params: { status: "ACTIVE" },
-      headers: {
-        "x-rapidapi-key": "79127b6bebmsh025591152333adep107f80jsn114492576aa0",
-        "x-rapidapi-host": "bravenewcoin.p.rapidapi.com",
-      },
-    };
-
-    axios
-      .request(options)
-      .then(function (response) {
-        let ids = new Array();
-        for (i in monedas) {
-          let obj = response.data.content.find((o, k) => {
-            if (o.name === monedas[i]) {
-              ids.push(o.id);
-              return true; // Para de buscar
-            }
-          });
-        }
-        resolve(ids);
-      })
-      .catch(function (error) {
-        reject(response.data.content);
-      });
-  });
-}

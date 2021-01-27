@@ -7,11 +7,11 @@ module.exports = (sequelize, type) => {
       allowNull: false,
       primaryKey: true,
     },
-    nombre: {
+    name: {
       type: type.STRING,
       allowNull: false,
     },
-    simbolo: {
+    symbol: {
       type: type.STRING,
       allowNull: false,
     },
