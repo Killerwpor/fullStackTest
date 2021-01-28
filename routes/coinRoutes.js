@@ -12,4 +12,6 @@ router.post(
 );
 router.get("/traerMonedas", controlador.traerMonedas);
 
+router.get("/test", controlador.conversionMonedas);
+
 module.exports = router;

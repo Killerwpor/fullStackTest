@@ -9,7 +9,6 @@ exports.traerMonedas = async (req, res) => {
 };
 
 exports.guardarMoneda = async (req, res) => {
-  console.log(req.body);
   // //Comprobar si esta guardando a su usuario
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
@@ -20,7 +19,7 @@ exports.guardarMoneda = async (req, res) => {
   // //   },
   // //   include: { model: User },
   // // });
-  if (user.token == token) {
+  if (user.token != null && user.token == token) {
     let moneda = [req.body.moneda];
     const infoMoneda = await exports.obtenerInfoMonedas(moneda); //Se busca si la moneda que mandó el usuario si existe
     console.log(infoMoneda);
@@ -37,7 +36,6 @@ exports.guardarMoneda = async (req, res) => {
       const infoCoinMoneda = {
         CoinId: infoMoneda[0].id,
         UserUserName: req.body.userName,
-        favorita: true,
       };
       const coinUser = CoinUser.create(infoCoinMoneda)
         .then(function (model) {
@@ -93,6 +91,87 @@ exports.obtenerInfoMonedas = (monedas) => {
       });
   });
 };
+
+exports.conversionMonedas = async (monedas, monedaFavorita) => {
+  const token = await getToken();
+  return new Promise((resolve, reject) => {
+    var options = {
+      method: "GET",
+      url: "https://bravenewcoin.p.rapidapi.com/market-cap",
+      params: { assetId: monedaFavorita },
+      headers: {
+        authorization: "Bearer " + token,
+        "x-rapidapi-key": "79127b6bebmsh025591152333adep107f80jsn114492576aa0",
+        "x-rapidapi-host": "bravenewcoin.p.rapidapi.com",
+      },
+    };
+
+    axios
+      .request(options)
+      .then(function (response) {
+        const precioMonedaFavorita = response.data.content[0].price;
+
+        var precios = new Array();
+        for (i in monedas) {
+          var options = {
+            method: "GET",
+            url: "https://bravenewcoin.p.rapidapi.com/market-cap",
+            params: { assetId: monedas[i].id },
+            headers: {
+              authorization: "Bearer " + token,
+              "x-rapidapi-key":
+                "79127b6bebmsh025591152333adep107f80jsn114492576aa0",
+              "x-rapidapi-host": "bravenewcoin.p.rapidapi.com",
+            },
+          };
+
+          axios
+            .request(options)
+            .then(function (response) {
+              precios.push(
+                precioMonedaFavorita / response.data.content[0].price
+              );
+              if (precios.length == monedas.length) resolve(precios);
+            })
+            .catch(function (error) {
+              console.error(error);
+            });
+        }
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  });
+};
+
+function getToken() {
+  return new Promise((resolve, reject) => {
+    var options = {
+      method: "POST",
+      url: "https://bravenewcoin.p.rapidapi.com/oauth/token",
+      headers: {
+        "content-type": "application/json",
+        "x-rapidapi-key": "79127b6bebmsh025591152333adep107f80jsn114492576aa0",
+        "x-rapidapi-host": "bravenewcoin.p.rapidapi.com",
+      },
+      data: {
+        audience: "https://api.bravenewcoin.com",
+        client_id: "oCdQoZoI96ERE9HY3sQ7JmbACfBf55RY",
+        grant_type: "client_credentials",
+      },
+    };
+
+    axios
+      .request(options)
+      .then(function (response) {
+        resolve(response.data.access_token);
+      })
+      .catch(function (error) {
+        reject(error);
+        console.error(error);
+      });
+  });
+}
 
 // async function obtenerInfoMonedas(nombreMoneda) {
 //   const moneda = [nombreMoneda];
