@@ -148,6 +148,68 @@ exports.listarMonedas = async (req, res) => {
   }
 };
 
+exports.topTresMonedas = async (req, res) => {
+  // //Comprobar si esta guardando a su usuario
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  const user = await User.findByPk(req.body.userName);
+  if (user.token != null && user.token == token) {
+    //Listar monedas
+    var monedas = await Coin.findAll({
+      raw: true,
+      attributes: ["id", "name", "symbol"],
+
+      include: [
+        {
+          model: User,
+          attributes: [],
+          where: { userName: req.body.userName },
+          through: {
+            where: { favorita: false },
+            attributes: [],
+          },
+        },
+      ],
+    });
+    // En monedas se tiene el array de monedas
+    // Ahora a hacer la conversión y mostrar el precio
+
+    const monedaFavorita = await CoinUser.findOne({
+      attributes: ["CoinId"],
+      where: {
+        UserUserName: req.body.userName,
+        favorita: true,
+      },
+    });
+    //console.log(monedas.length);
+    const precioEnMonedaFavorita = await coinController.conversionMonedas(
+      monedas,
+      monedaFavorita.CoinId
+    );
+
+    console.log(precioEnMonedaFavorita);
+
+    //Ya se tienen los precios en la monedad favorita del usuario, ahora a organizarlos y mostrarlos
+    for (i in monedas) {
+      monedas[i].precio = precioEnMonedaFavorita[i];
+    }
+
+    //Se ordena y se corta el array para sacar el top 3
+    monedas = monedas.sort((a, b) => b.precio - a.precio);
+    monedas = monedas.slice(0, 3);
+
+    //Si ingresa true en el parametro asc se muestra ascendente
+    if (req.body.asc == "true") {
+      monedas = monedas.sort((a, b) => a.precio - b.precio);
+    }
+
+    //Se muestra el resultado
+    res.send(monedas);
+  } else {
+    res.send("No tiene permiso");
+  }
+};
+
 exports.guardarMoneda = async (req, res) => {
   //Comprobar si esta guardando a su usuario
   const coin = Coin.create(req.body)

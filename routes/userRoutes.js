@@ -15,4 +15,6 @@ router.post("/guardarMoneda", controlador.guardarMoneda);
 
 router.get("/listarMonedas", controlador.listarMonedas);
 
+router.get("/topTresMonedas", controlador.topTresMonedas);
+
 module.exports = router;

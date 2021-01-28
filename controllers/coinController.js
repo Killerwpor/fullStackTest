@@ -94,11 +94,26 @@ exports.obtenerInfoMonedas = (monedas) => {
 
 exports.conversionMonedas = async (monedas, monedaFavorita) => {
   const token = await getToken();
-  return new Promise((resolve, reject) => {
+  var options = {
+    method: "GET",
+    url: "https://bravenewcoin.p.rapidapi.com/market-cap",
+    params: { assetId: monedaFavorita },
+    headers: {
+      authorization: "Bearer " + token,
+      "x-rapidapi-key": "79127b6bebmsh025591152333adep107f80jsn114492576aa0",
+      "x-rapidapi-host": "bravenewcoin.p.rapidapi.com",
+    },
+  };
+
+  var precioMonedaFavorita = await axios.request(options);
+  precioMonedaFavorita = precioMonedaFavorita.data.content[0].price;
+
+  var precios = new Array();
+  for (i in monedas) {
     var options = {
       method: "GET",
       url: "https://bravenewcoin.p.rapidapi.com/market-cap",
-      params: { assetId: monedaFavorita },
+      params: { assetId: monedas[i].id },
       headers: {
         authorization: "Bearer " + token,
         "x-rapidapi-key": "79127b6bebmsh025591152333adep107f80jsn114492576aa0",
@@ -106,41 +121,13 @@ exports.conversionMonedas = async (monedas, monedaFavorita) => {
       },
     };
 
-    axios
-      .request(options)
-      .then(function (response) {
-        const precioMonedaFavorita = response.data.content[0].price;
+    var precio = await axios.request(options);
+    precio = precio.data.content[0].price;
+    precios.push(precioMonedaFavorita / precio);
+  }
 
-        var precios = new Array();
-        for (i in monedas) {
-          var options = {
-            method: "GET",
-            url: "https://bravenewcoin.p.rapidapi.com/market-cap",
-            params: { assetId: monedas[i].id },
-            headers: {
-              authorization: "Bearer " + token,
-              "x-rapidapi-key":
-                "79127b6bebmsh025591152333adep107f80jsn114492576aa0",
-              "x-rapidapi-host": "bravenewcoin.p.rapidapi.com",
-            },
-          };
-
-          axios
-            .request(options)
-            .then(function (response) {
-              precios.push(
-                precioMonedaFavorita / response.data.content[0].price
-              );
-              if (precios.length == monedas.length) resolve(precios);
-            })
-            .catch(function (error) {
-              console.error(error);
-            });
-        }
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+  return new Promise((resolve, reject) => {
+    resolve(precios);
   });
 };
 
