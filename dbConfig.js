@@ -34,9 +34,10 @@ Coin.belongsToMany(User, { through: CoinUser });
 sequelize
   .sync({
     force: false,
+    logging: false,
   })
-  .then(() => {
-    console.log("Tablas sincronizadas");
+  .then(async() => {
+   await sequelize.close();
   });
 
 module.exports = {
