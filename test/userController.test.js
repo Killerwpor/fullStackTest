@@ -52,7 +52,7 @@ test("Login exitoso", async (done) => {
     method: "POST",
     url: "/some/url",
     body: {
-      userName: "2",
+      userName: "1",
       password: "02345678",
     },
   });
@@ -75,7 +75,7 @@ test("Listar monedas sin permiso", async (done) => {
     method: "POST",
     url: "/some/url",
     body: {
-      userName: "2",
+      userName: "1",
       password: "02345678",
     },
   });
@@ -103,7 +103,7 @@ test("Listar monedas sin permiso", async (done) => {
         authorization: respuesta.token,
       },
       body: {
-        userName: "2",
+        userName: "1",
         password: "02345678",
       },
     });
