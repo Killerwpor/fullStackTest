@@ -5,11 +5,6 @@ const dotenv = require("dotenv");
 const axios = require("axios").default;
 const coinController = require("../controllers/coinController");
 
-exports.traerUsuarios = async (req, res) => {
-  const users = await User.findAll();
-  res.json(users);
-};
-
 exports.guardarUsuario = async (req, res) => {
   let monedaFavorita = [req.body.monedaPreferida];
   const infoMoneda = await coinController.obtenerInfoMonedas(monedaFavorita); //Se busca si la moneda que mandó el usuario si existe
@@ -17,15 +12,11 @@ exports.guardarUsuario = async (req, res) => {
     //Guardar usuario
     const user = User.create(req.body)
       .then(function (model) {
-        console.log("Usuario guardado exitosamente");
         //Guardar moneda
+
         const coin = Coin.create(infoMoneda[0])
-          .then(function (model) {
-            console.log("Moneda guardada exitosamente");
-          })
-          .catch(function (e) {
-            console.log(e.message);
-          });
+          .then(function (model) {})
+          .catch(function (e) {});
         //Guardar relación usuario-moneda
         const infoCoinMoneda = {
           CoinId: infoMoneda[0].id,
@@ -33,17 +24,12 @@ exports.guardarUsuario = async (req, res) => {
           favorita: true,
         };
         const coinUser = CoinUser.create(infoCoinMoneda)
-          .then(function (model) {
-            console.log("Relación usuario-moneda guardada exitosamente");
-          })
-          .catch(function (e) {
-            console.log(e.message);
-          });
+          .then(function (model) {})
+          .catch(function (e) {});
+        //console.log(model);
         res.json(model);
       })
-      .catch(function (e) {
-        res.send(e.message);
-      });
+      .catch(function (e) {});
   } else {
     //Si no existe se le indica
     res.send("Moneda favorita no existe");
@@ -61,7 +47,6 @@ exports.login = async (req, res) => {
       if (response.password == req.body.password) {
         // get config vars
         dotenv.config();
-        console.log(process.env.TOKEN_SECRET);
 
         const payload = {
           check: true,
@@ -131,7 +116,6 @@ exports.listarMonedas = async (req, res) => {
         favorita: true,
       },
     });
-    //console.log(monedas.length);
     const precioEnMonedaFavorita = await coinController.conversionMonedas(
       monedas,
       monedaFavorita.CoinId
@@ -187,8 +171,6 @@ exports.topTresMonedas = async (req, res) => {
       monedaFavorita.CoinId
     );
 
-    console.log(precioEnMonedaFavorita);
-
     //Ya se tienen los precios en la monedad favorita del usuario, ahora a organizarlos y mostrarlos
     for (i in monedas) {
       monedas[i].precio = precioEnMonedaFavorita[i];
@@ -208,15 +190,4 @@ exports.topTresMonedas = async (req, res) => {
   } else {
     res.send("No tiene permiso");
   }
-};
-
-exports.guardarMoneda = async (req, res) => {
-  //Comprobar si esta guardando a su usuario
-  const coin = Coin.create(req.body)
-    .then(function (model) {
-      res.json(model);
-    })
-    .catch(function (e) {
-      res.send(e.message);
-    });
 };

@@ -10,8 +10,5 @@ router.post(
   authValidator.validateToken,
   controlador.guardarMoneda
 );
-router.get("/traerMonedas", controlador.traerMonedas);
-
-router.get("/test", controlador.conversionMonedas);
 
 module.exports = router;
