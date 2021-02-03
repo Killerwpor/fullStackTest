@@ -4,10 +4,10 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "jest --detectOpenHandles --coverage",
+    "test": "jest --detectOpenHandles --coverage --forceExit",
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "build": "jest --detectOpenHandles --coverage"
+    "build": "jest --detectOpenHandles --coverage --forceExit"
   },
   "author": "",
   "license": "ISC",
