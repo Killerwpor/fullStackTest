@@ -15,11 +15,6 @@ afterAll(() => {
     });
 });
 
-test("Obtiene un token", async () => {
-  const token = await controlador.getToken();
-  expect(token).toEqual(expect.any(String));
-});
-
 test("Retorna info para cada moneda", async () => {
   const monedas = await controlador.obtenerInfoMonedas(monedasPrueba);
   expect(monedas).toHaveLength(3);
@@ -46,8 +41,6 @@ test("Retorna la info que es", async () => {
   );
 });
 
-
-
 test("Trae el numero de precios correctos conversión monedas", async () => {
   const monedaFavorita = ["Bitcoin"];
   const conversionMonedas = await controlador.conversionMonedas(
@@ -55,4 +48,9 @@ test("Trae el numero de precios correctos conversión monedas", async () => {
     monedaFavorita
   );
   expect(conversionMonedas).toHaveLength(3);
-}, 60000);
+}, 8000);
+
+test("Obtiene un token", async () => {
+  const token = await controlador.getToken();
+  expect(token).toEqual(expect.any(String));
+});
