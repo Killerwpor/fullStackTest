@@ -3,7 +3,16 @@ const controlador = require("../controllers/coinController");
 const monedasPrueba = ["Bitcoin", "Ethereum", "Litecoin"];
 const db = require("../dbConfig");
 
-afterAll(() => {
+// beforeEach(() => {
+//   db.sequelize
+//     .sync({
+//       force: false,
+//       logging: false,
+//     })
+//     .then(async () => {});
+// });
+
+beforeAll(() => {
   //Se cierra la conexión de la BD para que JEST no se quede colgado
   db.sequelize
     .sync({
@@ -48,7 +57,7 @@ test("Trae el numero de precios correctos conversión monedas", async () => {
     monedaFavorita
   );
   expect(conversionMonedas).toHaveLength(3);
-}, 8000);
+}, 20000);
 
 test("Obtiene un token", async () => {
   const token = await controlador.getToken();

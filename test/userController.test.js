@@ -4,6 +4,26 @@ const controlador = require("../controllers/userController");
 const controladorCoin = require("../controllers/coinController");
 const db = require("../dbConfig");
 
+// beforeEach(() => {
+//   db.sequelize
+//     .sync({
+//       force: false,
+//       logging: false,
+//     })
+//     .then(async () => {});
+// });
+beforeAll(() => {
+  //Se cierra la conexión de la BD para que JEST no se quedé colgado
+  db.sequelize
+    .sync({
+      force: false,
+      logging: false,
+    })
+    .then(async () => {
+      await db.sequelize.close();
+    });
+});
+
 afterAll(() => {
   //Se cierra la conexión de la BD para que JEST no se quedé colgado
   db.sequelize
