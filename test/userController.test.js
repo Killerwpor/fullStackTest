@@ -2,7 +2,7 @@ require("mysql2/node_modules/iconv-lite").encodingExists("foo");
 const httpMocks = require("node-mocks-http");
 const controlador = require("../controllers/userController");
 const controladorCoin = require("../controllers/coinController");
-const db = require("../dbConfig");
+//const db = require("../dbConfig");
 
 // beforeEach(() => {
 //   db.sequelize
@@ -12,29 +12,29 @@ const db = require("../dbConfig");
 //     })
 //     .then(async () => {});
 // });
-beforeAll(() => {
-  //Se cierra la conexión de la BD para que JEST no se quedé colgado
-  db.sequelize
-    .sync({
-      force: false,
-      logging: false,
-    })
-    .then(async () => {
-      await db.sequelize.close();
-    });
-});
+// beforeAll(() => {
+//   //Se cierra la conexión de la BD para que JEST no se quedé colgado
+//   db.sequelize
+//     .sync({
+//       force: false,
+//       logging: false,
+//     })
+//     .then(async () => {
+//       await db.sequelize.close();
+//     });
+// });
 
-afterAll(() => {
-  //Se cierra la conexión de la BD para que JEST no se quedé colgado
-  db.sequelize
-    .sync({
-      force: false,
-      logging: false,
-    })
-    .then(async () => {
-      await db.sequelize.close();
-    });
-});
+// afterAll(() => {
+//   //Se cierra la conexión de la BD para que JEST no se quedé colgado
+//   db.sequelize
+//     .sync({
+//       force: false,
+//       logging: false,
+//     })
+//     .then(async () => {
+//       await db.sequelize.close();
+//     });
+// });
 
 test("Guardar usuario exitoso", async (done) => {
   const userName = "Test" + Math.random();

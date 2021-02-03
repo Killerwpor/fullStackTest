@@ -1,7 +1,6 @@
 require("mysql2/node_modules/iconv-lite").encodingExists("foo");
 const controlador = require("../controllers/coinController");
 const monedasPrueba = ["Bitcoin", "Ethereum", "Litecoin"];
-const db = require("../dbConfig");
 
 // beforeEach(() => {
 //   db.sequelize
@@ -12,17 +11,17 @@ const db = require("../dbConfig");
 //     .then(async () => {});
 // });
 
-beforeAll(() => {
-  //Se cierra la conexión de la BD para que JEST no se quede colgado
-  db.sequelize
-    .sync({
-      force: false,
-      logging: false,
-    })
-    .then(async () => {
-      await db.sequelize.close();
-    });
-});
+// beforeAll(() => {
+//   //Se cierra la conexión de la BD para que JEST no se quede colgado
+//   db.sequelize
+//     .sync({
+//       force: false,
+//       logging: false,
+//     })
+//     .then(async () => {
+//       await db.sequelize.close();
+//     });
+// });
 
 test("Retorna info para cada moneda", async () => {
   const monedas = await controlador.obtenerInfoMonedas(monedasPrueba);
