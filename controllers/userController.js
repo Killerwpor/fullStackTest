@@ -6,6 +6,7 @@ const axios = require("axios").default;
 const coinController = require("../controllers/coinController");
 
 exports.guardarUsuario = async (req, res) => {
+  console.log(req.body);
   let monedaFavorita = [req.body.monedaPreferida];
   const infoMoneda = await coinController.obtenerInfoMonedas(monedaFavorita); //Se busca si la moneda que mandó el usuario si existe
   if (infoMoneda.length != 0) {
@@ -86,8 +87,7 @@ exports.login = async (req, res) => {
 
 exports.listarMonedas = async (req, res) => {
   // //Comprobar si esta guardando a su usuario
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+  const token = req.headers.authorization;
   const user = await User.findByPk(req.body.userName);
   if (user.token != null && user.token == token) {
     //Listar monedas
@@ -133,9 +133,9 @@ exports.listarMonedas = async (req, res) => {
 };
 
 exports.topTresMonedas = async (req, res) => {
+  console.log(req.body);
   // //Comprobar si esta guardando a su usuario
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+  const token = req.headers.authorization;
   const user = await User.findByPk(req.body.userName);
   if (user.token != null && user.token == token) {
     //Listar monedas

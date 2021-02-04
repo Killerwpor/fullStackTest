@@ -3,9 +3,10 @@ const { User, Coin, CoinUser } = require("../dbConfig");
 const axios = require("axios").default;
 
 exports.guardarMoneda = async (req, res) => {
+  console.log(req.body);
   // //Comprobar si esta guardando a su usuario
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+  const token = req.headers.authorization;
+  console.log(token);
   const user = await User.findByPk(req.body.userName);
   if (user.token != null && user.token == token) {
     let moneda = [req.body.moneda];

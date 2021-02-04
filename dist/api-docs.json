@@ -1,0 +1,213 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0.0",
+      "title": "Api prueba Bancolombia",
+      "description": "Backend desarrollado en Nodejs para prueba full stack V 2.2"
+    },
+    "basePath": "/api",
+    "securityDefinitions":{
+      "Bearer":{
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+      }
+      }, 
+    
+    
+    "tags" : [
+      {"name": "User", 
+      "description": "Operaciones de usuario"
+      },
+      {"name": "Cryptocurrency", 
+        "description": "Operaciones de moneda "
+        }
+    ],
+    "consumes": [
+      "application/x-www-form-urlencoded"
+    ],
+    "produces": [
+      "application/json"
+    ],
+    "paths": {
+      "/user/guardarUsuario": {
+         "post": {
+            "tags": ["User"],
+            "description": "Guarda un usuario nuevo",
+            "operationId": "for the URL",
+            "produces": [
+              "application/json"
+            ],
+            "parameters": [
+                {
+                  "name": "userName",
+                  "in": "formData",
+                  "description": "nombre de usuario único",
+                  "required": true
+              },
+              {
+                "name": "nombre",
+                "in": "formData",
+                "description": "nombre",
+                "required": true
+            },
+            {
+              "name": "apellido",
+              "in": "formData",
+              "description": "apellido del usuario",
+              "required": true
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "description": "contraseña del usuario",
+            "required": true
+        },
+        {
+          "name": "monedaPreferida",
+          "in": "formData",
+          "description": "Nombre de la criptomoneda preferida",
+          "required": true
+      }
+        
+            ],
+            "responses": {
+              "200": {
+                "description": "create response"
+              }
+            }
+          }
+      },
+      "/user/login": {
+        "post": {
+           "tags": ["User"],
+           "description": "Permite loguear un usuario",
+           "operationId": "for the URL",
+           "produces": [
+             "application/json"
+           ],
+           "parameters": [
+               {
+                 "name": "userName",
+                 "in": "formData",
+                 "description": "nombre de usuario único",
+                 "required": true
+             },
+         {
+           "name": "password",
+           "in": "formData",
+           "description": "contraseña del usuario",
+           "required": true
+       }       
+           ],
+           "responses": {
+             "200": {
+               "description": "Autenticación correcta"
+             }
+           }
+         }
+     },
+      "/user/listarMonedas": {
+          "post":{
+            "tags":["User"],
+            "description":"Lista todos las monedas del usuario incluyendo la favorita",
+            "operationId":"get",
+            "produces": [
+              "application/json"
+            ],
+            "security": [
+              {
+                "Bearer": []
+              }
+            ],             
+            "parameters":[
+                {
+                  "name": "userName",
+                  "in": "formData",
+                  "description": "nombre de usuario único",
+                  "required": true,
+                  "type": "string"
+                }
+              ],
+            "responses": {
+              "200": {
+                "description": "lista de monedas"
+              }
+            }
+          }
+        },
+        "/user/topTresMonedas": {
+          "post":{
+            "tags":["User"],
+            "description":"Lista el top tres de monedas, puede ser asc o desc",
+            "operationId":"get",
+            "produces": [
+              "application/json"
+            ],
+            "security": [
+              {
+                "Bearer": []
+              }
+            ],
+            "parameters":[
+                {
+                  "name": "userName",
+                  "in": "formData",
+                  "description": "nombre de usuario único",
+                  "required": true,
+                  "type": "string"
+                },
+                {
+                  "name": "asc",
+                  "in": "formData",
+                  "description": "Parametro opciones, true si quiere ordenarlo asc o false si quiere ordenarlo desc",
+                  "required": false,
+                  "type": "string"
+                }
+              ],
+            "responses": {
+              "200": {
+                "description": "lista de monedas"
+              }
+            }
+          }
+        },
+        "/coin/guardarMoneda": {
+          "post":{
+            "tags":["Cryptocurrency"],
+            "description":"Lista el top tres de monedas, puede ser asc o desc",
+            "operationId":"post",
+            "produces": [
+              "application/json"
+            ],
+            "security": [
+              {
+                "Bearer": []
+              }
+            ],
+            "parameters":[
+                {
+                  "name": "userName",
+                  "in": "formData",
+                  "description": "nombre de usuario único",
+                  "required": true,
+                  "type": "string"
+                },
+                {
+                  "name": "moneda",
+                  "in": "formData",
+                  "description": "nombre de la moneda",
+                  "required": true,
+                  "type": "string"
+                }
+              ],
+            "responses": {
+              "200": {
+                "description": "lista de monedas"
+              }
+            }
+          }
+        }
+    }
+  
+  }

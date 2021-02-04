@@ -10,8 +10,8 @@ router.post("/guardarUsuario", controlador.guardarUsuario);
 
 router.post("/login", controlador.login);
 
-router.get("/listarMonedas", controlador.listarMonedas);
+router.post("/listarMonedas", controlador.listarMonedas);
 
-router.get("/topTresMonedas", controlador.topTresMonedas);
+router.post("/topTresMonedas", controlador.topTresMonedas);
 
 module.exports = router;
